@@ -4,7 +4,10 @@ dotenv.load();
 var SENDGRID_USERNAME = process.env.SENDGRID_USERNAME;
 var SENDGRID_PASSWORD = process.env.SENDGRID_PASSWORD;
 var SECRET_NUMBER = process.env.SECRET_NUMBER;
+var secret_number = SECRET_NUMBER;
 var PRIZE = "<img src='http://www.maxistentialism.com/bees/oprahbees.gif'/>";
+var prize = PRIZE;
+var bees = PRIZE;
 var Hapi = require('hapi');
 var sendgrid = require('sendgrid')(SENDGRID_USERNAME, SENDGRID_PASSWORD);
 var port = parseInt(process.env.PORT) || 3000;
@@ -29,30 +32,34 @@ server.route({
   method: 'POST',
   path:   '/inbound',
   handler: function (request, reply) {
-    // Email guess to: hi@mot.webhook.email
+
+    // +++++++++++++++++++++++++++++++++
+    // Email number between 1 and 10 to: 
+    // >>> hi@mot.webhook.email <<<
+    // +++++++++++++++++++++++++++++++++
     var payload = request.payload;
-    var subject = payload.subject;
     var email = payload.from;
+    var subject = payload.subject;
+
 
     saveGuess(email, subject, function(email, subject) {
       console.log(subject);
 
-      // step 2
-      var html = "Wrong number. Try again";
-      if (subject == SECRET_NUMBER) {
-        html = "CORRECT! You win a prize.<br/>";
-        html += PRIZE;
-      }
 
+      var html = "Wrong answer. try again!";
+      if (subject == SECRET_NUMBER) {
+        html = "You win a prize."+ bees;
+      }
       sendgrid.send({
         to: email,
-        from: 'hi@mot.webhook.email',
-        subject: 'Thanks for coming to PayPal BattleHack Chicago!',
+        from: 'scott.motte@sendgrid.com',
+        subject: 'Awesome to be at Paypal Battlehack!',
         html: html
-      }, function(err, resp) {
-        console.log(err);
-        console.log(resp);
+      }, function(err, res) {
+        console.log(res);
       });
+
+
 
       reply({success: true});
     });
