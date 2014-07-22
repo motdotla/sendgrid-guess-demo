@@ -8,6 +8,7 @@ var secret_number = SECRET_NUMBER;
 var PRIZE = "<img src='http://www.maxistentialism.com/bees/oprahbees.gif'/>";
 var prize = PRIZE;
 var bees = PRIZE;
+var BEES = PRIZE;
 var Hapi = require('hapi');
 var sendgrid = require('sendgrid')(SENDGRID_USERNAME, SENDGRID_PASSWORD);
 var port = parseInt(process.env.PORT) || 3000;
@@ -41,10 +42,8 @@ server.route({
     var email = payload.from;
     var subject = payload.subject;
 
-
     saveGuess(email, subject, function(email, subject) {
       console.log(subject);
-
 
       var html = "Wrong answer. try again!";
       if (subject == SECRET_NUMBER) {
@@ -58,8 +57,6 @@ server.route({
       }, function(err, res) {
         console.log(res);
       });
-
-
 
       reply({success: true});
     });
