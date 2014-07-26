@@ -28,40 +28,65 @@ function saveGuess(from, subject, callback) {
 // Create a server with a host and port
 var server = Hapi.createServer('localhost', port);
 
-// Add the inbound route
 server.route({
   method: 'POST',
   path:   '/inbound',
   handler: function (request, reply) {
-
     // +++++++++++++++++++++++++++++++++
-    // Email number between 1 and 10 to: 
+    // Email number between 1 and 10 to:
     // >>> hi@mot.webhook.email <<<
     // +++++++++++++++++++++++++++++++++
     var payload = request.payload;
-    var email = payload.from;
     var subject = payload.subject;
+    var email = payload.from;
 
     saveGuess(email, subject, function(email, subject) {
-      console.log(subject);
-
-      var html = "Wrong answer. try again!";
+      var html = "Wrong answer. Try again!";
       if (subject == SECRET_NUMBER) {
-        html = "You win a prize."+ bees;
+        html = "You win a prize. " + bees;
       }
       sendgrid.send({
         to: email,
         from: 'scott.motte@sendgrid.com',
-        subject: 'Awesome to be at Paypal Battlehack!',
+        subject: "Great to be in Sydney!",
         html: html
-      }, function(err, res) {
-        console.log(res);
+      }, function(err, json) {
+        console.log(err);
+        console.log(json);
       });
-
+      
+      console.log(subject);
+    
+    
       reply({success: true});
     });
+    
+
+    
+
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Start the server
 server.start(function() {
